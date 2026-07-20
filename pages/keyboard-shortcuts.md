@@ -1,6 +1,5 @@
 ---
 title: Keyboard shortcuts worth learning
-summary: A compact set of shortcuts that makes sketching feel effortless.
 ---
 
 ## The essential set

@@ -1,4 +1,4 @@
-# Open Sketchbook Wiki
+# Public Wiki
 
 A public, community-editable wiki about [Excalidraw](https://github.com/excalidraw/excalidraw), published with GitHub Pages.
 
@@ -9,7 +9,6 @@ Visit the published site and choose **New page**, or add a Markdown file to [`pa
 ```md
 ---
 title: Your page title
-summary: A one-line description.
 ---
 
 ## Start writing

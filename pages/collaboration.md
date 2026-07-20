@@ -1,6 +1,5 @@
 ---
 title: Better collaborative sessions
-summary: Simple facilitation patterns for clearer, calmer remote workshops.
 ---
 
 ## Before the room opens

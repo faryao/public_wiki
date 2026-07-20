@@ -1,6 +1,5 @@
 ---
 title: Diagramming patterns
-summary: Reusable visual structures for systems, decisions, and stories.
 ---
 
 ## Start with the question

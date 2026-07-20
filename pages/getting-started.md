@@ -1,6 +1,5 @@
 ---
 title: Getting started with Excalidraw
-summary: From blank canvas to your first shareable sketch in five minutes.
 ---
 
 ## Why Excalidraw?

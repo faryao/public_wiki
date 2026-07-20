@@ -16,7 +16,13 @@ function markdown(source) {
   s = s.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>');
   s = s.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>').replace(/^[-*] (.+)$/gm,'<li>$1</li>').replace(/((?:<li>.*<\/li>\n?)+)/g,'<ul>$1</ul>');
   s = s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`(.+?)`/g,'<code>$1</code>');
-  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+  const links = [];
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_, label, url) => {
+    links.push(`<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`);
+    return `%%LINK${links.length - 1}%%`;
+  });
+  s = s.replace(/https?:\/\/[^\s<]+[^\s<.,;:!?)]/g, url => `<a href="${url}" target="_blank" rel="noreferrer">${url}</a>`);
+  s = s.replace(/%%LINK(\d+)%%/g, (_, index) => links[Number(index)]);
   return s.split(/\n{2,}/).map(block => /^<(h\d|ul|pre|blockquote)/.test(block) ? block : `<p>${block.replace(/\n/g,'<br>')}</p>`).join('');
 }
 
@@ -27,7 +33,7 @@ async function getPages() {
   return Promise.all(files.map(async file => {
     const text = await fetch(file.download_url).then(r => r.text());
     const { meta } = parseFrontmatter(text);
-    return { ...file, title: meta.title || titleFromFile(file.name), summary: meta.summary || 'A community note from the open sketchbook.' };
+    return { ...file, title: meta.title || titleFromFile(file.name) };
   }));
 }
 
@@ -37,9 +43,9 @@ async function renderHome() {
   const grid = document.querySelector('#page-grid');
   try {
     const pages = await getPages();
-    const draw = list => grid.innerHTML = list.length ? list.map((p,i) => `<a class="page-card" href="#page=${encodeURIComponent(p.name)}"><span class="number">${String(i+1).padStart(2,'0')} / ${String(list.length).padStart(2,'0')}</span><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.summary)}</p></a>`).join('') : '<p class="loading">No matching pages.</p>';
+    const draw = list => grid.innerHTML = list.length ? list.map(p => `<a class="page-card" href="#page=${encodeURIComponent(p.name)}">${escapeHtml(p.title)}</a>`).join('') : '<p class="loading">No matching pages.</p>';
     draw(pages);
-    document.querySelector('#search').addEventListener('input', e => { const q=e.target.value.toLowerCase(); draw(pages.filter(p => `${p.title} ${p.summary}`.toLowerCase().includes(q))); });
+    document.querySelector('#search').addEventListener('input', e => { const q=e.target.value.toLowerCase(); draw(pages.filter(p => p.title.toLowerCase().includes(q))); });
   } catch { grid.innerHTML = '<p class="loading">The library could not be loaded. Try refreshing in a moment.</p>'; }
   bindCreate();
 }
@@ -53,8 +59,8 @@ async function renderPage(filename) {
     const text = await fetch(data.download_url).then(r => r.text());
     const { meta, body } = parseFrontmatter(text);
     const title = meta.title || titleFromFile(filename);
-    document.title = `${title} — Open Sketchbook`;
-    main.innerHTML = `<div class="article-shell"><article class="article"><p class="eyebrow">OPEN SKETCHBOOK / FIELD NOTE</p><h1>${escapeHtml(title)}</h1><p class="summary">${escapeHtml(meta.summary || '')}</p><div class="prose">${markdown(body)}</div></article><aside class="article-aside"><a class="back-link" href="#home">← All pages</a><a href="https://github.com/${REPO}/edit/main/pages/${encodeURIComponent(filename)}" target="_blank">Edit this page ↗</a><a href="https://github.com/${REPO}/commits/main/pages/${encodeURIComponent(filename)}" target="_blank">View history ↗</a><a href="#" data-open-create>Create a new page +</a></aside></div>`;
+    document.title = `${title} — Public Wiki`;
+    main.innerHTML = `<div class="article-shell"><article class="article"><h1>${escapeHtml(title)}</h1><div class="prose">${markdown(body)}</div></article><aside class="article-aside"><a class="back-link" href="#home">← All pages</a><a href="https://github.com/${REPO}/edit/main/pages/${encodeURIComponent(filename)}" target="_blank">Edit this page ↗</a><a href="https://github.com/${REPO}/commits/main/pages/${encodeURIComponent(filename)}" target="_blank">View history ↗</a><a href="#" data-open-create>Create a new page +</a></aside></div>`;
     bindCreate(); window.scrollTo(0,0);
   } catch { main.innerHTML='<section class="error"><h1>Page not found.</h1><p>This note may have moved or is still being written.</p><a href="#home">← Return to the library</a></section>'; }
 }
@@ -67,10 +73,9 @@ function bindCreate() {
 document.querySelector('#create-form').addEventListener('submit', e => {
   e.preventDefault();
   const title = document.querySelector('#page-title').value.trim();
-  const summary = document.querySelector('#page-summary').value.trim();
   if (!title) return;
   const slug = title.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'new-page';
-  const value = `---\ntitle: ${title}\nsummary: ${summary || `A practical guide to ${title}.`}\n---\n\n## Overview\n\nStart writing here. Explain the idea clearly and add examples that help other readers.\n\n## Notes\n\n- Add your first useful note.\n`;
+  const value = `---\ntitle: ${title}\n---\n\nStart writing here.\n`;
   window.location.href = `https://github.com/${REPO}/new/main/pages?filename=${encodeURIComponent(slug+'.md')}&value=${encodeURIComponent(value)}`;
 });
 
