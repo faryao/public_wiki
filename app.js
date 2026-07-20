@@ -60,14 +60,20 @@ async function renderPage(filename) {
     const { meta, body } = parseFrontmatter(text);
     const title = meta.title || titleFromFile(filename);
     document.title = `${title} — Public Wiki`;
-    main.innerHTML = `<div class="article-shell"><article class="article"><h1>${escapeHtml(title)}</h1><div class="prose">${markdown(body)}</div></article><aside class="article-aside"><a class="back-link" href="#home">← All pages</a><a href="https://github.com/${REPO}/edit/main/pages/${encodeURIComponent(filename)}" target="_blank">Edit this page ↗</a><a href="https://github.com/${REPO}/commits/main/pages/${encodeURIComponent(filename)}" target="_blank">View history ↗</a><a href="#" data-open-create>Create a new page +</a></aside></div>`;
-    bindCreate(); window.scrollTo(0,0);
+    main.innerHTML = `<div class="article-shell"><article class="article"><h1>${escapeHtml(title)}</h1><div class="prose">${markdown(body)}</div></article><aside class="article-aside"><a class="back-link" href="#home">← All pages</a><a href="https://github.com/${REPO}/edit/main/pages/${encodeURIComponent(filename)}" target="_blank">Edit this page ↗</a><a href="https://github.com/${REPO}/commits/main/pages/${encodeURIComponent(filename)}" target="_blank">View history ↗</a><a href="#" data-open-create>Create a new page +</a><a class="delete-link" href="https://github.com/${REPO}/delete/main/pages/${encodeURIComponent(filename)}" data-delete-page>Delete this page</a></aside></div>`;
+    bindCreate(); bindDelete(); window.scrollTo(0,0);
   } catch { main.innerHTML='<section class="error"><h1>Page not found.</h1><p>This note may have moved or is still being written.</p><a href="#home">← Return to the library</a></section>'; }
 }
 
 function bindCreate() {
   const dialog = document.querySelector('#create-dialog');
   document.querySelectorAll('[data-open-create]').forEach(button => button.onclick = e => { e.preventDefault(); dialog.showModal(); setTimeout(()=>document.querySelector('#page-title').focus(),50); });
+}
+
+function bindDelete() {
+  document.querySelectorAll('[data-delete-page]').forEach(link => link.addEventListener('click', event => {
+    if (!window.confirm('Delete this page? GitHub will ask you to commit the deletion.')) event.preventDefault();
+  }));
 }
 
 document.querySelector('#create-form').addEventListener('submit', e => {
