@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A public, community-editable wiki about Excalidraw." />
+    <title>Open Sketchbook Wiki</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="Open Sketchbook home">
+        <span class="brand-mark">OS</span>
+        <span>Open Sketchbook</span>
+      </a>
+      <nav>
+        <a href="#home">Browse</a>
+        <a href="https://github.com/faryao/public_wiki" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <button class="new-page-button" data-open-create>+ New page</button>
+      </nav>
+    </header>
+
+    <main id="app" aria-live="polite">
+      <section class="hero">
+        <p class="eyebrow">A COMMUNITY-MAINTAINED FIELD GUIDE</p>
+        <h1>Everything we know about<br /><em>Excalidraw.</em></h1>
+        <p class="hero-copy">Practical notes, shortcuts, and workflows for the open-source virtual whiteboard. Read freely. Improve anything.</p>
+        <div class="hero-actions">
+          <button class="primary-button" data-open-create>Create a page <span>→</span></button>
+          <a class="text-link" href="#how-it-works">How it works</a>
+        </div>
+      </section>
+
+      <section class="library" id="library">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE LIBRARY</p>
+            <h2>Start exploring</h2>
+          </div>
+          <label class="search">
+            <span>⌕</span>
+            <input id="search" type="search" placeholder="Search pages…" autocomplete="off" />
+          </label>
+        </div>
+        <div id="page-grid" class="page-grid"><p class="loading">Opening the sketchbook…</p></div>
+      </section>
+
+      <section class="how" id="how-it-works">
+        <p class="eyebrow">OPEN BY DESIGN</p>
+        <h2>This wiki belongs to everyone.</h2>
+        <div class="steps">
+          <article><span>01</span><h3>Pick a topic</h3><p>Create a missing guide, pattern, glossary entry, or useful field note.</p></article>
+          <article><span>02</span><h3>Write on GitHub</h3><p>We take you straight to GitHub's editor with a Markdown page ready to go.</p></article>
+          <article><span>03</span><h3>Share what works</h3><p>Commit your change. The published wiki updates automatically from the repository.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="create-dialog">
+      <form id="create-form" method="dialog">
+        <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+        <p class="eyebrow">ADD TO THE WIKI</p>
+        <h2>Create a new page</h2>
+        <p>Give your page a clear title. You’ll finish writing it in GitHub’s editor.</p>
+        <label>Page title<input id="page-title" required maxlength="80" placeholder="e.g. Running collaborative workshops" /></label>
+        <label>One-line summary<input id="page-summary" maxlength="160" placeholder="What will readers learn?" /></label>
+        <button class="primary-button wide" type="submit">Continue to GitHub <span>→</span></button>
+        <small>A GitHub account is required to propose changes.</small>
+      </form>
+    </dialog>
+
+    <footer><span>Open Sketchbook Wiki</span><span>Knowledge should be editable.</span><a href="https://github.com/faryao/public_wiki">View source ↗</a></footer>
+    <script src="app.js"></script>
+  </body>
+</html>
