@@ -1,4 +1,4 @@
-const REPO = 'faryao/public_wiki';
+const REPO = 'faryao/public-wiki';
 const API = `https://api.github.com/repos/${REPO}`;
 
 const escapeHtml = (value = '') => value.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
